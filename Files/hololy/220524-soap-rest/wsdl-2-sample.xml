@@ -1,86 +1,43 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<wsdl:description xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                  xmlns:wsdl="http://www.w3.org/ns/wsdl"
-                  xmlns:soap="http://www.w3.org/ns/wsdl/soap"
-                  xmlns:calc="http://example.org/calculator"
-                  xmlns:tns="http://example.org/calculatorService"
-                  targetNamespace="http://example.org/calculatorService">
+<?xml version="1.0"?>
+<wsdl:description xmlns:wsdl="http://www.w3.org/ns/wsdl"
+  xmlns:wsoap= "http://www.w3.org/ns/wsdl/soap"
+  xmlns:hy="https://www.herongyang.com/Service/"
+  targetNamespace="https://www.herongyang.com/Service/">
 
-    <!--
-      Abstract type definitions
-    -->
+  <wsdl:documentation>
+    Hello_WSDL_20_SOAP.wsdl
+    Copyright (c) 2009 HerongYang.com. All Rights Reserved.
+  </wsdl:documentation>
 
-    <wsdl:types>
-        <!--
-        <xs:schema>
-            <xs:import namespace="http://example.org/calculator" schemaLocation="calc/calculator.xsd" />
-        </xs:schema>
-        -->
-        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                   xmlns:tns="http://example.org/calculator"
-                   targetNamespace="http://example.org/calculator"
-                   elementFormDefault="qualified"
-                   attributeFormDefault="qualified">
+  <wsdl:types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+      targetNamespace="https://www.herongyang.com/Service/">
+      <xsd:element name="Hello" type="xsd:string"/>
+      <xsd:element name="HelloResponse" type="xsd:string"/>
+    </xsd:schema>
+  </wsdl:types>
 
-            <xs:element name="AddValuesRequest" type="tns:AddValuesType" />
-            <xs:element name="AddValuesResponse" type="tns:AddValuesResponseType" />
+  <wsdl:interface name="helloInterface">
+    <wsdl:operation name="Hello"
+      pattern="http://www.w3.org/ns/wsdl/in-out">
+      <wsdl:input messageLabel="In" element="hy:Hello"/>
+      <wsdl:output messageLabel="Out" element="hy:HelloResponse"/>
+    </wsdl:operation>
+  </wsdl:interface>
 
-            <xs:complexType name="AddValuesType">
-                <xs:sequence>
-                    <xs:element name="FirstValue" type="xs:int" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="SecondValue" type="xs:int" minOccurs="1" maxOccurs="1" />
-                </xs:sequence>
-            </xs:complexType>
+  <wsdl:binding name="helloBinding"
+    interface="hy:helloInterface"
+    type="http://www.w3.org/ns/wsdl/soap"
+    wsoap:protocol="http://www.w3.org/2003/05/soap/bindings/HTTP/">
+    <wsdl:operation ref="hy:Hello"
+      wsoap:mep="http://www.w3.org/2003/05/soap/mep/soap-response"/>
+  </wsdl:binding>
 
-            <xs:complexType name="AddValuesResponseType">
-                <xs:sequence minOccurs="1" maxOccurs="1">
-                    <xs:element name="Result" type="xs:int" />
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:attribute name="Timestamp" type="xs:dateTime" />
-            <xs:element name="CalculationFault">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="ErrorCode" type="xs:int" />
-                        <xs:element name="Reason" type="xs:string" />
-                    </xs:sequence>
-                    <xs:attribute ref="tns:Timestamp" use="required" />
-                </xs:complexType>
-            </xs:element>
-
-        </xs:schema>
-    </wsdl:types>
-
-    <!--
-        Abstract interface
-    -->
-
-    <wsdl:interface name="CalculatorInterface">
-        <wsdl:fault name="fault" element="calc:CalculationFault" />
-        <wsdl:operation name="AddValues" pattern="http://www.w3.org/ns/wsdl/in-out" style="http://www.w3.org/ns/wsdl/style/iri" wsdl:safe="true">
-            <wsdl:documentation>Adds up passed values and returns the result</wsdl:documentation>
-            <wsdl:input messageLabel="in" element="calc:AddValuesRequest" />
-            <wsdl:output messageLabel="out" element="calc:AddValuesResponse" />
-            <wsdl:outfault messageLabel="fault" ref="tns:fault" />
-        </wsdl:operation>
-    </wsdl:interface>
-
-    <!--
-        Concrete binding definition
-    -->
-
-    <wsdl:binding name="CalculatorBinding" interface="tns:CalculatorInterface" type="http://www.w3.org/ns/wsdl/soap" soap:protocol="http://www.w3.org/2003/05/soap/bindings/HTTP/">
-        <wsdl:operation ref="tns:AddValues" soap:mep="http://www.w3.org/2003/05/soap/mep/soap-response" />
-        <wsdl:fault ref="tns:fault" soap:code="soap:Sender" />
-    </wsdl:binding>
-
-    <!--
-        Concrete service definition
-    -->
-
-    <wsdl:service name="CalculatorService" interface="tns:CalculatorInterface">
-        <wsdl:endpoint name="CalculatorEndpoint" binding="tns:CalculatorBinding" address="http://localhost:8080/services/calculator" />
-    </wsdl:service>
+  <wsdl:service name="helloService"
+    interface="hy:helloInterface">
+    <wsdl:endpoint name="helloEndpoint"
+      binding="hy:helloBinding"
+      address="https://www.herongyang.com/Service/Hello_SOAP_12.php"/>
+  </wsdl:service>
 
 </wsdl:description>
